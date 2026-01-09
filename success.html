@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Pago exitoso</title>
+
+<!-- jsPDF versión UMD (correcta) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  // HABILITAR jsPDF GLOBAL
+  window.jsPDF = window.jspdf.jsPDF;
+</script>
+
+<!-- html2canvas (OBLIGATORIO PARA CAPTURAR EL TICKET) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  body {
+    font-family: "Montserrat", sans-serif;
+    background: #f8f5e6;
+    padding: 25px;
+    text-align: center;
+  }
+
+  .ticket {
+    width: 350px;
+    margin: auto;
+    background: black;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 0px 12px rgba(0,0,0,0.35);
+    border: 3px solid #d4af37;
+  }
+
+  .titulo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #d4af37;
+    margin-bottom: 5px;
+  }
+
+  .subtitulo {
+    font-size: 14px;
+    color: #d4af37;
+    margin-bottom: 15px;
+  }
+
+  .linea {
+    border-top: 2px dotted #d4af37;
+    margin: 12px 0;
+  }
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    padding: 4px 0;
+    color: #d4af37;
+  }
+
+  .total {
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    color: #d4af37;
+    margin-top: 10px;
+  }
+
+  .footer {
+    text-align: center;
+    font-size: 12px;
+    color: #d4af37;
+    font-style: italic;
+    margin-top: 15px;
+  }
+
+  .logo {
+    width: 90px;
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+  }
+
+  #descargar {
+    margin-top: 25px;
+    padding: 10px 25px;
+    background: black;
+    color: #d4af37;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+  }
+
+  #descargar:hover {
+    background: #bfa43a;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>¡Pago realizado con éxito! 🎉</h1>
+<p>Gracias por tu compra.</p>
+
+<a href="http://localhost/proyecto4/index.html">Volver a la tienda</a><br><br>
+
+<!-- Ticket -->
+<div id="ticket-area" class="ticket">
+
+  <img src="lofo.png" class="logo">
+
+  <div class="titulo">Ni Küelita Notal</div>
+  <div class="subtitulo">Artesanal • Tradicional • Hecho con amor</div>
+
+  <div class="linea"></div>
+
+  <div class="item"><strong>Fecha:</strong> <span id="fecha"></span></div>
+  <div class="item"><strong>Folio:</strong> <span id="folio"></span></div>
+
+  <div class="linea"></div>
+
+  <div id="lista-productos"></div>
+
+  <div class="linea"></div>
+
+  <div class="total" id="total"></div>
+
+  <div class="linea"></div>
+
+  <div class="footer">Gracias por apoyar el trabajo artesanal 💗<br>¡Vuelve pronto!</div>
+
+</div>
+
+<button id="descargar">Descargar Ticket PDF</button>
+
+<script>
+// ===============================
+// TICKET DINÁMICO
+// ===============================
+
+document.getElementById("fecha").innerText = new Date().toLocaleString();
+
+const folio = "NK-" + Math.floor(Math.random()*999999);
+document.getElementById("folio").innerText = folio;
+
+let carrito = JSON.parse(localStorage.getItem("ticketCarrito")) || [];
+
+let contenedor = document.getElementById("lista-productos");
+let total = 0;
+
+carrito.forEach(p => {
+  let nombre = p.name || p.nombre;
+  let precio = p.price || p.precio;
+  let cantidad = p.quantity || p.cantidad || 1;
+
+  let fila = document.createElement("div");
+  fila.classList.add("item");
+
+  fila.innerHTML = `
+     <span>${nombre} x${cantidad}</span>
+     <span>$${precio * cantidad}</span>
+  `;
+
+  contenedor.appendChild(fila);
+
+  total += precio * cantidad;
+});
+
+document.getElementById("total").innerText = "TOTAL: $" + total + " MXN";
+
+
+// ===============================
+// GENERAR PDF EXACTO AL TICKET
+// ===============================
+document.getElementById("descargar").addEventListener("click", () => {
+  
+  const ticket = document.getElementById("ticket-area");
+
+  html2canvas(ticket, { scale: 3, useCORS: true }).then(canvas => {
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "px",
+      format: [ticket.offsetWidth + 40, ticket.offsetHeight + 40]
+    });
+
+    pdf.addImage(imgData, "PNG", 20, 20, ticket.offsetWidth, ticket.offsetHeight);
+
+    pdf.save("ticket_NK.pdf");
+
+    localStorage.removeItem("ticketCarrito");
+  });
+
+});
+</script>
+
+</body>
+</html>

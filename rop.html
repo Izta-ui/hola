@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="rop.css">
+  <title>Ropa</title>
+</head>
+<body>
+<nav class="navbar">
+  <div class="logo">Ni Kuelita Notal</div>
+  <ul class="nav-links">
+    <li><a href="rop.html">Ropa</a></li>
+    <li><a href="manu.html">Manualidades</a></li>
+    <li><a href="ves.html">Vestidos</a></li>
+    <li><a href="ale.html">Alebrijes</a></li>
+    <li><a href="#diseño" id="abrirFormulario">Diseño</a></li>
+    <li class="cart-icon" onclick="toggleCart()">🛒 <span id="cart-count">0</span></li>
+  </ul>
+</nav>
+
+<!-- Carrito lateral -->
+<div class="cart-panel" id="cart-panel">
+  <h3>Tu carrito 🛍️</h3>
+  <div class="cart-items"></div>
+  <div class="cart-total">Total: $0 MXN</div>
+
+  <!-- Botón pagar sin backend -->
+  <button id="pagar" class="btn-pagar">Pagar ahora</button>
+  <button onclick="clearCart()" class="clear-cart">Vaciar carrito</button>
+
+</div> <!-- CIERRE DEL CARRITO -->
+
+
+<!-- 🔵 Script principal de Stripe (correcto y sin duplicados) -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+  const stripe = Stripe(
+    "pk_test_51SSfoX0bwADDhpsjBLID9t41374lv63DskII4hVgQiqwt5L0bVmFh4cqAKg0TvgDyuH20ziUr5QJjZa0xT8a21OH00nemIIkZE"
+  );
+
+  document.getElementById("pagar").addEventListener("click", async function () {
+    const carrito = JSON.parse(localStorage.getItem("cart")) || [];
+
+    if (carrito.length === 0) {
+      alert("Tu carrito está vacío");
+      return;
+    }
+
+    // Guardar carrito para ticket
+    localStorage.setItem("ticketCarrito", JSON.stringify(cart));
+    try {
+    const res = await fetch("crear-sesion.php ", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(carrito)
+    });
+if (!res.ok) {
+        alert("Error: No se encontró crear-sesion.php (Error " + res.status + ")");
+        return;
+      }
+    const data = await res.json().catch(() => null);
+
+    if (!data || !data.id) {
+        alert("Error en la sesión de pago.\nEl servidor no regresó un ID válido.");
+        console.log("Respuesta recibida:", data);
+        return;
+      }
+    // TODO BIEN → Redirigir a Stripe
+      stripe.redirectToCheckout({ sessionId: data.id });
+
+    } catch (error) {
+      alert("Error de conexión con el servidor.");
+      console.error(error);
+    }
+  });
+</script>
+
+
+
+<!-- 🔵 CARRITO DE COMPRAS -->
+<script>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function toggleCart() {
+    document.getElementById('cart-panel').classList.toggle('open');
+  }
+
+  function addToCart(name, price) {
+    cart.push({ nombre: name, precio: price });
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCart();
+  }
+
+  function updateCart() {
+    const itemsContainer = document.querySelector('.cart-items');
+    const countElement = document.getElementById('cart-count');
+    itemsContainer.innerHTML = '';
+    let total = 0;
+
+    cart.forEach((item, index) => {
+      total += item.precio;
+      itemsContainer.innerHTML += `
+        <div class="cart-item">
+          <span>${item.nombre}</span>
+          <span>$${item.precio}</span>
+          <button onclick="removeItem(${index})">✖</button>
+        </div>
+      `;
+    });
+
+    document.querySelector('.cart-total').textContent = `Total: $${total} MXN`;
+    if (countElement) countElement.textContent = cart.length;
+  }
+
+  function removeItem(index) {
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCart();
+  }
+
+  function clearCart() {
+    cart = [];
+    localStorage.removeItem("cart");
+    updateCart();
+  }
+
+  updateCart();
+</script>
+<script>
+  // Abrir formulario al hacer clic en "Diseño"
+  document.getElementById('abrirFormulario').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.getElementById('formularioDiseño').style.display = 'block';
+  });
+
+  // Cerrar formulario
+  document.getElementById('cerrarFormulario').addEventListener('click', function () {
+    document.getElementById('formularioDiseño').style.display = 'none';
+  });
+
+  // Filtrar productos
+  document.getElementById('formFiltro').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const color = this.color.value;
+    const estacion = this.estacion.value;
+    const ocasion = this.ocasion.value;
+
+    document.getElementById('formularioDiseño').style.display = 'none';
+
+    const productos = document.querySelectorAll('.producto');
+
+    productos.forEach(producto => {
+      const prodColor = producto.getAttribute('data-color');
+      const prodEstacion = producto.getAttribute('data-estacion');
+      const prodOcasion = producto.getAttribute('data-ocasion');
+
+      if (prodColor === color && prodEstacion === estacion && prodOcasion === ocasion) {
+        producto.style.display = 'inline-block';
+      } else {
+        producto.style.display = 'none';
+      }
+    });
+
+    document.querySelector('#productos').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+
+<div class="top-bar">
+  <div class="carousel-text">
+    <p>✨ Envío gratis en pedidos mayores a $1,000 MXN</p>
+    <p>🌸 Artesanías oaxaqueñas hechas con amor</p>
+    <p>🎁 Productos únicos y personalizados</p>
+    <p>💜 Gracias por apoyar el arte mexicano</p>
+  </div>
+</div>
+
+<div id="formularioDiseño" style="display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:#fff; padding:20px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.3); z-index:1000;">
+  <h2>Selecciona características de diseño</h2>
+  <form id="formFiltro">
+    <label for="color">Color:</label>
+    <select id="color" name="color" required>
+      <option value="">--Selecciona--</option>
+      <option value="rojo">Rojo</option>
+      <option value="azul">Azul</option>
+      <option value="verde">Verde</option>
+      <!-- Agrega más colores según tus productos -->
+    </select>
+    <br><br>
+
+    <label for="estacion">Estación:</label>
+    <select id="estacion" name="estacion" required>
+      <option value="">--Selecciona--</option>
+      <option value="primavera">Primavera</option>
+      <option value="verano">Verano</option>
+      <option value="otonio">Otoño</option>
+      <option value="invierno">Invierno</option>
+    </select>
+    <br><br>
+
+    <label for="ocasion">Ocasión:</label>
+    <select id="ocasion" name="ocasion" required>
+      <option value="">--Selecciona--</option>
+      <option value="casual">Casual</option>
+      <option value="formal">Formal</option>
+      <option value="fiesta">Fiesta</option>
+      <!-- Más opciones si quieres -->
+    </select>
+    <br><br>
+
+    <button type="submit">Buscar</button>
+    <button type="button" id="cerrarFormulario">Cancelar</button>
+  </form>
+</div>
+<div class="container">
+<div id="productos">
+  <!-- Producto 1 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+     <img src="blusa tradicional.jpg" alt="Blusa">
+    <h3>Blusa Tradicional</h3>
+    <p class="precio">$450 MXN</p>
+    <p class="descripcion">Blusa bordada a mano con motivos oaxaqueños.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa Tradicional">
+      <input type="hidden" name="precio" value="450">
+      <button class="btn" type="button" onclick="addToCart('Blusa Tradicional', 450)">Agregar al carrito</button>
+    </form>
+    </div> <!-- cierre del producto 1 -->
+
+  <!-- Producto 2 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="descarga (3).jpg" alt="Vestido para niña">
+    <h3>Vestido Infantil</h3>
+    <p class="precio">$380 MXN</p>
+    <p class="descripcion">Vestido hecho a mano, ideal para ocasiones especiales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Vestido Infantil">
+      <input type="hidden" name="precio" value="380">
+      <button class="btn" type="button" onclick="addToCart('Vestido Infantil', 380)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 3 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/7da7c4b5-2037-4969-ad06-1e5c87e0b285.jpg" alt="Blusa tradicional">
+    <h3>Blusa Tradicional</h3>
+    <p class="precio">$500 MXN</p>
+    <p class="descripcion">Blusa bordada a mano con motivos oaxaqueños.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa Tradicional">
+      <input type="hidden" name="precio" value="500">
+      <button class="btn" type="button" onclick="addToCart('Blusa Tradicional', 500)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 4 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/26a01b5c-1573-4601-8000-405ba7d8e0fc.jpg" alt="Alebrije">
+    <h3>Alebrije</h3>
+    <p class="precio">$700 MXN</p>
+    <p class="descripcion">Figura artesanal de madera pintada a mano.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Alebrije">
+      <input type="hidden" name="precio" value="700">
+      <button class="btn" type="button" onclick="addToCart('Alebrije', 700)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 5 (aquí agregué tu imagen) -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="descarga (7).jpg" alt="Blusa Nueva">
+    <h3>Blusa Nueva</h3>
+    <p class="precio">$550 MXN</p>
+    <p class="descripcion">Blusa artesanal única con bordados especiales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa Nueva">
+      <input type="hidden" name="precio" value="550">
+      <button class="btn" type="button" onclick="addToCart('Blusa Nueva', 550)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Los demás productos corregidos para que agreguen el producto correcto -->
+  <!-- Producto 6 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="blusa4.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Repite para productos 7 a 16 con la corrección en los botones -->
+  <!-- Producto 7 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/0af893ac-75a5-4536-9a5b-aa5185d26450.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 8 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/35891265-020b-4eea-a0a9-c73e10289ece.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 9 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/3f032cf6-c633-4f41-9c82-0217641db304.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 10 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/513761b0-7095-4691-98ff-c702a59e8cbb.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 11 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/76eb0733-f70a-49a7-b709-c6ec75f9f8fa.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 12 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/b143a414-cf6c-453d-aac1-d48878e961ce.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 13 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/96cb9036-96dc-4d2c-8ca0-44fbe18563b3.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 14 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/78f1ded0-3a35-4544-80c7-4e08c88d21f5.jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 15 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/descarga (2).jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+      <input type="hidden" name="precio" value="420">
+      <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+    </form>
+  </div>
+
+  <!-- Producto 16 -->
+  <div class="producto" data-color="rojo" data-estacion="verano" data-ocasion="casual">
+    <img src="ROPA/descarga (5).jpg" alt="Blusa María">
+    <h3>Blusa María</h3>
+    <p class="precio">$420 MXN</p>
+    <p class="descripcion">Blusa artesanal con bordados florales.</p>
+    <form action="agregar_carrito.php" method="POST">
+      <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" type="button" onclick="addToCart('Blusa María', 420)">Agregar al carrito</button>
+        </form>
+      </div>
+    </div>
+    </div>
+  <!-- Botón con imagen que regresa al inicio -->
+<a href="index.html" class="home-button">
+  <img src="lofo.png" alt="Inicio" />
+</a>
+</body>
+</html>

@@ -1,0 +1,23 @@
+.topbar {
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.topbar .container {
+  display: flex;
+  gap: 20px;
+}
+
+.icon {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}

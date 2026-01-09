@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ni Kuelita Notal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Barra superior */
+    .top-bar {
+      background-color: #7b17b8;
+      color: #ffe6ff;
+      font-size: 15px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .carousel-text {
+      display: inline-block;
+      animation: moveLeft 20s linear infinite;
+    }
+    .carousel-text p {
+      margin: 0 50px 0 0;
+      display: inline-block;
+      font-weight: 500;
+    }
+    @keyframes moveLeft {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #111;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .navbar .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f7a1f3;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    .nav-links a {
+      color: #e2cc67bd;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover {
+      color: #05acfa;
+    }
+
+    /* Header con video */
+    header {
+      position: relative;
+      height: 70vh;
+      text-align: center;
+      overflow: hidden;
+    }
+    header video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      z-index: -1;
+      filter: brightness(0.6);
+    }
+    header h1 {
+      font-size: 3rem;
+      margin-top: 100px;
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #ffe6ff;
+      margin-top: 10px;
+    }
+    header .cta {
+      margin-top: 30px;
+      display: inline-block;
+      background-color: #9a30ec;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    header .cta:hover {
+      background-color: #05acfa;
+    }
+
+    /* Contenido principal */
+    main {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+    main h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #a1cdf7;
+      font-size: 2rem;
+    }
+
+    /* --- Encabezado del carrusel --- */
+    .carousel-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .carousel-header .ver-todo {
+      background-color: #d9d9d9;
+      color: #000;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .carousel-controls .arrow {
+      width: 35px;
+      height: 35px;
+      border: none;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+      color: #333;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .carousel-controls .arrow:hover {
+      background-color: #9a30ec;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* --- Carrusel --- */
+    .carousel-container {
+      width: 100vw;
+      max-width: 1200px; 
+      overflow: hidden;
+      position: relative;
+     margin: 0 auto 50px auto;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 20px;
+      transition: transform 0.5s ease;
+    }
+
+    .carousel-item {
+      min-width: 320px;
+      margin-right: 25px;
+    }
+
+    /* --- Tarjetas --- */
+    .product-card {
+      flex: 0 0 calc(25% - 15px); /* Mostrar 4 productos visibles completos */
+  background: #ffe6ff;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .product-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 35px rgba(154,48,236,0.25);
+    }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .product-card h3 {
+      color: #000;
+      margin-bottom: 10px;
+    }
+    .product-card p {
+      color: #3701fd;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+    .product-card .btn {
+      background-color: #9a30ec;
+      color: white;
+      padding: 10px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .product-card .btn:hover {
+      background-color: #05acfa;
+    }
+    .carousel-btn {
+  position: absolute;
+  top: 10px;
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+}
+.carousel-btn:hover {
+  background: #9a30ec;
+  color: white;
+}
+
+.carousel-btn.prev {
+  right: 60px; /* Ajusta según te guste */
+}
+
+.carousel-btn.next {
+  right: 10px;
+}
+.modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    .modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 90%;
+      padding: 30px;
+      position: relative;
+      box-shadow: 0 0 20px rgba(0,0,0,0.25);
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+      color: #4a8add;
+      text-align: center;
+    }
+
+    .modal-content label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .modal-content input, 
+    .modal-content textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .modal-content button {
+      background-color: #004aad;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      user-select: none;
+    }
+
+    .modal-content button:hover {
+      background-color: #002f6c;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #004aad;
+      user-select: none;
+    }
+
+
+    /* Footer */
+    footer {
+      background-color: #111;
+      text-align: center;
+      padding: 40px 20px;
+      color: #e66deb;
+      margin-top: 60px;
+    }
+    footer a {
+      color: #f7a1f3;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    /* --- Carrito lateral --- */
+.cart-icon {
+  cursor: pointer;
+  font-size: 1.1rem;
+  position: relative;
+}
+
+#cart-count {
+  background-color: #ff4081;
+  color: #fff;
+  border-radius: 50%;
+  padding: 2px 7px;
+  font-size: 0.8rem;
+  position: absolute;
+  top: -10px;
+  right: -12px;
+}
+
+.cart-panel {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 320px;
+  height: 100vh;
+  background-color: #fff;
+  color: #333;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.3);
+  transition: right 0.4s ease;
+  padding: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-panel.open {
+  right: 0;
+}
+
+.cart-panel h3 {
+  margin-bottom: 15px;
+  color: #9a30ec;
+  text-align: center;
+}
+
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0;
+}
+
+.cart-item button {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.cart-total {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.clear-cart {
+  background-color: #9a30ec;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.clear-cart:hover {
+  background-color: #05acfa;
+}
+
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+  <div class="logo">Ni Kuelita Notal</div>
+  <ul class="nav-links">
+    <li><a href="rop.html">Ropa</a></li>
+    <li><a href="manu.html">Manualidades</a></li>
+    <li><a href="ves.html">Vestidos</a></li>
+    <li><a href="ale.html">Alebrijes</a></li>
+    <li><a href="#contact" id="open-contact">Contacto</a></li>
+    <li class="cart-icon" onclick="toggleCart()">
+      🛒 <span id="cart-count">0</span>
+    </li>
+  </ul>
+</nav>
+
+<!-- Carrito lateral -->
+<div class="cart-panel" id="cart-panel">
+  <h3>Tu carrito 🛍️</h3>
+  <div class="cart-items"></div>
+  <div class="cart-total">Total: $0 MXN</div>
+  <button onclick="clearCart()" class="clear-cart">Vaciar carrito</button>
+</div>
+
+  <div class="top-bar">
+    <div class="carousel-text">
+      <p>✨ Envío gratis en pedidos mayores a $1,000 MXN</p>
+      <p>🌸 Artesanías oaxaqueñas hechas con amor</p>
+      <p>🎁 Productos únicos y personalizados</p>
+      <p>💜 Gracias por apoyar el arte mexicano</p>
+    </div>
+  </div>
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="artesania(1).mp4" type="video/mp4">
+      Tu navegador no soporta video HTML5.
+    </video>
+    <h1>Ni Kuelita Notal a tu servicio</h1>
+    <p>Artesanías oaxaqueñas hechas para ti</p>
+    <a href="#productos" class="cta">Explora nuestra colección</a>
+  </header>
+
+  <main id="productos">
+  <h2>Las ofertas de la temporada</h2>
+  <div class="carousel-container" id="carousel-container">
+    <button class="carousel-btn prev" aria-label="Anterior">&#10094;</button>
+    <button class="carousel-btn next" aria-label="Siguiente">&#10095;</button>
+
+    <div class="carousel" id="carousel">
+      <!-- Productos -->
+      <div class="product-card">
+        <img src="ROPA/2dd12e67-e680-4bea-83fe-c20e02c7a0da.jpg" alt="Ropa artesanal">
+        <h3>Blusa bordada</h3>
+        <p>$650 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+      <div class="product-card">
+        <img src="manualidades/m17.jpg" alt="Manualidades">
+        <h3>Estuche bordado</h3>
+        <p>$120 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+      <div class="product-card">
+        <img src="Vestidos de XV/v4.jpg" alt="Vestidos de fiesta">
+        <h3>Vestido de gala</h3>
+        <p>$1,200 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+      <div class="product-card">
+        <img src="alebrijes/A2.jpg" alt="Alebrijes">
+        <h3>Alebrije jaguar</h3>
+        <p>$850 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+      <div class="product-card">
+        <img src="ROPA/2ccdb184-cf09-4ef4-b448-f7b0874c985e.jpg" alt="Ropa">
+        <h3>Pantalón bordado</h3>
+        <p>$700 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+      <div class="product-card">
+        <img src="manualidades/m6.jpg" alt="Manualidades">
+        <h3>Bolsita artesanal</h3>
+        <p>$150 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+      <div class="product-card">
+        <img src="Vestidos de XV/vn1.jpg" alt="Vestidos de fiesta">
+        <h3>Vestido corto</h3>
+        <p>$900 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+      <div class="product-card">
+        <img src="alebrijes/A8.jpg" alt="Alebrijes">
+        <h3>Alebrije dragón</h3>
+        <p>$1,000 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+       <div class="product-card">
+        <img src="ROPA/26a01b5c-1573-4601-8000-405ba7d8e0fc.jpg" alt="Alebrijes">
+        <h3>Alebrije dragón</h3>
+        <p>$1,000 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+       <div class="product-card">
+        <img src="manualidades/m15.jpg" alt="Alebrijes">
+        <h3>Alebrije dragón</h3>
+        <p>$1,000 MXN</p>
+        <a href="VERMAS.HTML" class="btn">Ver más</a>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>
+  <p>&copy; 2025 NiKuelitaNotal. Todos los reservado para ti.</p>
+  <div class="social-links" aria-label="Redes sociales">
+    <a href="#" aria-label="Facebook" target="_blank" rel="noopener noreferrer"></a>
+    <a href="#" aria-label="Twitter" target="_blank" rel="noopener noreferrer"></a>
+    <a href="#" aria-label="Instagram" target="_blank" rel="noopener noreferrer"></a>
+  </div>
+</footer>
+
+<!-- Modal Contacto -->
+<div class="modal" id="modal-contact" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+  <div class="modal-content">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar ventana">&times;</button>
+    <h2 id="modal-title">Contáctanos</h2>
+    <form id="contact-form">
+      <label for="name">Nombre</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Correo Electrónico</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="message">Mensaje</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
+
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+</div>
+<style>
+  .carousel-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    margin: 0 auto 50px auto;
+  }
+
+  .carousel {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.5s ease;
+  }
+
+  .product-card {
+    flex: 0 0 calc(25% - 15px);
+    background: #ffe6ff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+
+  .product-card h3 { color: #000; margin-bottom: 10px; }
+  .product-card p { color: #3701fd; font-size: 1rem; margin-bottom: 15px; }
+  .product-card .btn {
+    background-color: #9a30ec;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  .product-card .btn:hover { background-color: #05acfa; }
+
+  .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+    cursor: pointer;
+    user-select: none;
+    color: #333;
+    z-index: 10;
+    transition: background-color 0.3s ease;
+  }
+
+  .carousel-btn:hover {
+    background: #9a30ec;
+    color: white;
+  }
+
+  .carousel-btn.prev { left: 10px; }
+  .carousel-btn.next { right: 10px; }
+
+  @media (max-width: 1024px) { .product-card { flex: 0 0 calc(33.33% - 15px); } }
+  @media (max-width: 768px) { .product-card { flex: 0 0 calc(50% - 15px); } }
+  @media (max-width: 480px) { .product-card { flex: 0 0 calc(100% - 15px); } }
+</style>
+
+<script>
+// Modal contacto
+const openContactButtons = [document.getElementById('open-contact')]; // No hay "open-contact-hero", solo "open-contact"
+const modal = document.getElementById('modal-contact');
+const modalClose = document.getElementById('modal-close');
+
+openContactButtons.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    modal.classList.add('open');
+    modal.focus();
+  });
+});
+
+modalClose.addEventListener('click', () => {
+  modal.classList.remove('open');
+});
+
+// Cerrar modal con ESC
+window.addEventListener('keydown', (e) => {
+  if (e.key === "Escape" && modal.classList.contains('open')) {
+    modal.classList.remove('open');
+  }
+});
+
+// Submit formulario (simulación)
+const contactForm = document.getElementById('contact-form');
+contactForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  alert('¡Gracias por contactarnos! Te responderemos pronto.');
+  contactForm.reset();
+  modal.classList.remove('open');
+});
+const carousel = document.getElementById('carousel');
+const container = document.getElementById('carousel-container');
+const prevBtn = container.querySelector('.carousel-btn.prev');
+const nextBtn = container.querySelector('.carousel-btn.next');
+
+let currentIndex = 0;
+let autoMoveInterval;
+
+function updateCarousel() {
+  const cardWidth = carousel.children[0].offsetWidth + 20;
+  carousel.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+}
+
+function showNext() {
+  const itemsVisible = Math.floor(container.offsetWidth / (carousel.children[0].offsetWidth + 20));
+  currentIndex++;
+  if (currentIndex > carousel.children.length - itemsVisible) {
+    currentIndex = 0; // Loop infinito
+  }
+  updateCarousel();
+}
+
+function showPrev() {
+  const itemsVisible = Math.floor(container.offsetWidth / (carousel.children[0].offsetWidth + 20));
+  currentIndex--;
+  if (currentIndex < 0) {
+    currentIndex = carousel.children.length - itemsVisible; // Loop infinito
+  }
+  updateCarousel();
+}
+
+function startAutoMove() {
+  autoMoveInterval = setInterval(showNext, 3000);
+}
+
+function resetAutoMove() {
+  clearInterval(autoMoveInterval);
+  startAutoMove();
+}
+
+nextBtn.addEventListener('click', () => {
+  showNext();
+  resetAutoMove(); // Reinicia el temporizador al hacer clic manual
+});
+
+prevBtn.addEventListener('click', () => {
+  showPrev();
+  resetAutoMove(); // Reinicia el temporizador al hacer clic manual
+});
+
+// Iniciar movimiento automático
+startAutoMove();
+
+
+// ==== CARRITO DE COMPRAS ====
+let cart = [];
+
+function toggleCart() {
+  document.getElementById('cart-panel').classList.toggle('open');
+}
+
+function addToCart(name, price) {
+  cart.push({ name, price });
+  updateCart();
+}
+
+function updateCart() {
+  const itemsContainer = document.querySelector('.cart-items');
+  const countElement = document.getElementById('cart-count');
+  itemsContainer.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    total += item.price;
+    itemsContainer.innerHTML += `
+      <div class="cart-item">
+        <span>${item.name}</span>
+        <span>$${item.price}</span>
+        <button onclick="removeItem(${index})">✖</button>
+      </div>
+    `;
+  });
+
+  document.querySelector('.cart-total').textContent = `Total: $${total} MXN`;
+  countElement.textContent = cart.length;
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
+
+function clearCart() {
+  cart = [];
+  updateCart();
+}
+
+</script>
+</html>

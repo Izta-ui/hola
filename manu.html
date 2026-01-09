@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="manu.css">
+  <title>Manualidades</title>
+</head>
+
+<nav class="navbar">
+  <div class="logo">Ni Kuelita Notal</div>
+  <ul class="nav-links">
+    <li><a href="rop.html">Ropa</a></li>
+    <li><a href="manu.html">Manualidades</a></li>
+    <li><a href="ves.html">Vestidos</a></li>
+    <li><a href="ale.html">Alebrijes</a></li>
+    <li><a href="#contact" id="open-contact">Contacto</a></li>
+    <li class="cart-icon" onclick="toggleCart()">
+      🛒 <span id="cart-count">0</span>
+    </li>
+  </ul>
+</nav>
+
+<!-- Carrito lateral -->
+<div class="cart-panel" id="cart-panel">
+  <h3>Tu carrito 🛍️</h3>
+  <div class="cart-items"></div>
+  <div class="cart-total">Total: $0 MXN</div>
+  <button onclick="clearCart()" class="clear-cart">Vaciar carrito</button>
+</div>
+
+   <div class="top-bar">
+    <div class="carousel-text">
+      <p>✨ Envío gratis en pedidos mayores a $1,000 MXN</p>
+      <p>🌸 Artesanías oaxaqueñas hechas con amor</p>
+      <p>🎁 Productos únicos y personalizados</p>
+      <p>💜 Gracias por apoyar el arte mexicano</p>
+    </div>
+  </div>
+  <section class="productos">
+    <h2 class="section-title">Manos que inspiran corazones que disfrutan</h2>
+
+    <div class="grid-productos">
+
+      <!-- Producto 1 -->
+      <div class="producto-card">
+        <img src="manualidades/m1.webp" alt="Blusa tradicional">
+        <h3>Centro de mesa</h3>
+        <p class="precio">$450 MXN</p>
+        <p class="descripcion">Blusa bordada a mano con motivos oaxaqueños.</p>
+        
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa Tradicional">
+          <input type="hidden" name="precio" value="450">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+
+      <!-- Producto 2 -->
+      <div class="producto-card">
+        <img src="manualidades/m2.webp" alt="Vestido para niña">
+        <h3>Tazas</h3>
+        <p class="precio">$380 MXN</p>
+        <p class="descripcion">Vestido hecho a mano, ideal para ocasiones especiales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Vestido Infantil">
+          <input type="hidden" name="precio" value="380">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+
+      <!-- Producto 3 -->
+      <div class="producto-card">
+        <img src="manualidades/m1.jpg" alt="Blusa tradicional">
+        <h3>Servilleta</h3>
+        <p class="precio">$500 MXN</p>
+        <p class="descripcion">Blusa bordada a mano con motivos oaxaqueños.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa Tradicional">
+          <input type="hidden" name="precio" value="500">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+
+      <!-- Producto 4 -->
+      <div class="producto-card">
+        <img src="manualidades/m2.jpg" alt="Alebrije">
+        <h3>Bolsa</h3>
+        <p class="precio">$700 MXN</p>
+        <p class="descripcion">Figura artesanal de madera pintada a mano.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Alebrije">
+          <input type="hidden" name="precio" value="700">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+
+      <!-- Producto 5 -->
+      <div class="producto-card">
+        <img src="manualidades/m3.jpg" alt="Blusa tradicional">
+        <h3>Bolsa</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+<!-- Producto 6 -->
+     <div class="producto-card">
+        <img src="manualidades/m4.jpg" alt="Blusa tradicional">
+        <h3>Bolsa</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 7 -->
+      <div class="producto-card">
+        <img src="manualidades/m5.jpg" alt="Blusa tradicional">
+        <h3>Aretes</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 8 -->
+      <div class="producto-card">
+        <img src="manualidades/m6.jpg" alt="Blusa tradicional">
+        <h3>Collar</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 9 -->
+      <div class="producto-card">
+        <img src="manualidades/m7.jpg" alt="Blusa tradicional">
+        <h3>Bolso</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 10 -->
+      <div class="producto-card">
+        <img src="manualidades/m8.jpg" alt="Blusa tradicional">
+        <h3>Servilleta</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 11 -->
+      <div class="producto-card">
+        <img src="manualidades/m9.jpg" alt="Blusa tradicional">
+        <h3>Servilletero</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+<!-- Producto 12 -->
+      <div class="producto-card">
+        <img src="manualidades/m10.jpg" alt="Blusa tradicional">
+        <h3>Tenate frutero</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+<!-- Producto 13 -->
+      <div class="producto-card">
+        <img src="manualidades/m11.jpg" alt="Blusa tradicional">
+        <h3>Servilleta</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 14 -->
+      <div class="producto-card">
+        <img src="manualidades/m12.jpg" alt="Blusa tradicional">
+        <h3>Bolso</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 15 -->
+      <div class="producto-card">
+        <img src="manualidades/m13.jpg" alt="Blusa tradicional">
+        <h3>Servilleta</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+      <!-- Producto 16 -->
+      <div class="producto-card">
+        <img src="manualidades/m14.jpg" alt="Blusa tradicional">
+        <h3>Aretes</h3>
+        <p class="precio">$420 MXN</p>
+        <p class="descripcion">Blusa artesanal con bordados florales.</p>
+        <form action="agregar_carrito.php" method="POST">
+          <input type="hidden" name="nombre" value="Blusa María">
+          <input type="hidden" name="precio" value="420">
+          <button class="btn" onclick="addToCart('Centro de mesa', 450)">Agregar al carrito</button>
+
+        </form>
+      </div>
+
+    </div> <!-- Cierra grid-productos -->
+  </section>
+   <!-- Botón con imagen que regresa al inicio -->
+  <a href="pro4.html" class="home-button">
+    <img src="logo-removebg-preview.png" alt="Inicio" />
+  </a>
+
+  <script>
+// ==== CARRITO DE COMPRAS ====
+let cart = [];
+
+function toggleCart() {
+  document.getElementById('cart-panel').classList.toggle('open');
+}
+
+function addToCart(name, price) {
+  cart.push({ name, price });
+  updateCart();
+}
+
+function updateCart() {
+  const itemsContainer = document.querySelector('.cart-items');
+  const countElement = document.getElementById('cart-count');
+  itemsContainer.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    total += item.price;
+    itemsContainer.innerHTML += `
+      <div class="cart-item">
+        <span>${item.name}</span>
+        <span>$${item.price}</span>
+        <button onclick="removeItem(${index})">✖</button>
+      </div>
+    `;
+  });
+
+  document.querySelector('.cart-total').textContent = `Total: $${total} MXN`;
+  countElement.textContent = cart.length;
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCart();
+}
+
+function clearCart() {
+  cart = [];
+  updateCart();
+}
+</script>
+
+</body>
+</html>
