@@ -36,50 +36,51 @@
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
-  const stripe = Stripe(
-    "pk_test_51SSfoX0bwADDhpsjBLID9t41374lv63DskII4hVgQiqwt5L0bVmFh4cqAKg0TvgDyuH20ziUr5QJjZa0xT8a21OH00nemIIkZE"
-  );
+const stripe = Stripe("pk_test_51SSfoX0bwADDhpsjBLID9t41374lv63DskII4hVgQiqwt5L0bVmFh4cqAKg0TvgDyuH20ziUr5QJjZa0xT8a21OH00nemIIkZE");
 
-  document.getElementById("pagar").addEventListener("click", async function () {
-    const carrito = JSON.parse(localStorage.getItem("cart")) || [];
+document.getElementById("pagar").addEventListener("click", async function () {
+  // Tomar carrito del localStorage
+  const carrito = JSON.parse(localStorage.getItem("cart")) || [];
 
-    if (carrito.length === 0) {
-      alert("Tu carrito está vacío");
+  if (carrito.length === 0) {
+    alert("Tu carrito está vacío");
+    return;
+  }
+
+  // Guardar carrito para ticket
+  localStorage.setItem("ticketCarrito", JSON.stringify(carrito));
+
+  try {
+    // Enviar carrito a PHP
+    const res = await fetch("/proyecto4/crear-sesion.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(carrito)
+    });
+
+    if (!res.ok) {
+      alert("Error: No se encontró crear-sesion.php (Error " + res.status + ")");
       return;
     }
 
-// Guardar carrito para ticket
-localStorage.setItem("ticketCarrito", JSON.stringify(cart));
-
-try {
-  // Asegúrate de usar la ruta correcta
-  const res = await fetch("/proyecto4/crear-sesion.php", { // ruta absoluta
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(cart) // enviamos el carrito
-  });
-
-if (!res.ok) {
-        alert("Error: No se encontró crear-sesion.php (Error " + res.status + ")");
-        return;
-      }
     const data = await res.json().catch(() => null);
 
     if (!data || !data.id) {
-        alert("Error en la sesión de pago.\nEl servidor no regresó un ID válido.");
-        console.log("Respuesta recibida:", data);
-        return;
-      }
-    // TODO BIEN → Redirigir a Stripe
-      const stripe = Stripe("pk_test_51SSfoX0bwADDhpsjBLID9t41374lv63DskII4hVgQiqwt5L0bVmFh4cqAKg0TvgDyuH20ziUr5QJjZa0xT8a21OH00nemIIkZE"); // Reemplaza con tu clave pública
+      alert("Error en la sesión de pago.\nEl servidor no regresó un ID válido.");
+      console.log("Respuesta recibida:", data);
+      return;
+    }
+
+    // Redirigir a Stripe Checkout
     await stripe.redirectToCheckout({ sessionId: data.id });
 
-    } catch (error) {
-      alert("Error de conexión con el servidor.");
-      console.error(error);
-    }
-  });
+  } catch (error) {
+    alert("Error de conexión con el servidor.");
+    console.error(error);
+  }
+});
 </script>
+
 
 
 
