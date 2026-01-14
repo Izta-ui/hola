@@ -48,14 +48,17 @@
       return;
     }
 
-    // Guardar carrito para ticket
-    localStorage.setItem("ticketCarrito", JSON.stringify(cart));
-    try {
-    const res = await fetch("crear-sesion.php ", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(carrito)
-    });
+// Guardar carrito para ticket
+localStorage.setItem("ticketCarrito", JSON.stringify(cart));
+
+try {
+  // Asegúrate de usar la ruta correcta
+  const res = await fetch("/proyecto4/crear-sesion.php", { // ruta absoluta
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(cart) // enviamos el carrito
+  });
+
 if (!res.ok) {
         alert("Error: No se encontró crear-sesion.php (Error " + res.status + ")");
         return;
@@ -68,7 +71,8 @@ if (!res.ok) {
         return;
       }
     // TODO BIEN → Redirigir a Stripe
-      stripe.redirectToCheckout({ sessionId: data.id });
+      const stripe = Stripe("pk_test_51SSfoX0bwADDhpsjBLID9t41374lv63DskII4hVgQiqwt5L0bVmFh4cqAKg0TvgDyuH20ziUr5QJjZa0xT8a21OH00nemIIkZE"); // Reemplaza con tu clave pública
+    await stripe.redirectToCheckout({ sessionId: data.id });
 
     } catch (error) {
       alert("Error de conexión con el servidor.");
